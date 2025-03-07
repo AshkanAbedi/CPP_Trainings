@@ -7,6 +7,10 @@
 #include "InputMappingContext.h"
 #include "InputAction.h"
 #include "EnhancedInputComponent.h"
+#include "EnhancedInputSubsystems.h"
+
+#define LOG_LOCATION GEngine->AddOnScreenDebugMessage(1, 5.f, FColor::Red, FString::Printf(TEXT("Location: %s, Rotation: %s"), *GetActorLocation().ToString(), *GetActorRotation().ToString()))
+
 
 // Sets default values
 ABasePawn::ABasePawn()
@@ -32,6 +36,17 @@ void ABasePawn::BeginPlay()
 {
 	Super::BeginPlay();
 	PlayerStates = EPlayerStates::Normal;
+
+	auto EnhancedInputSubsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(GetWorld()->GetFirstLocalPlayerFromController());
+	if (EnhancedInputSubsystem != nullptr)
+	{
+		EnhancedInputSubsystem->AddMappingContext(InputMappingContext, 0);
+		UE_LOG(LogTemp, Warning, TEXT("EnhancedInputSubsystem is found!"));
+	}
+	else
+	{
+		UE_LOG(LogTemp, Warning, TEXT("EnhancedInputSubsystem is not found!"));
+	}
 }
 
 
@@ -64,7 +79,7 @@ void ABasePawn::TurnLeft(const FInputActionValue& Value)
 void ABasePawn::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-
+	LOG_LOCATION;
 }
 
 // Called to bind functionality to input
