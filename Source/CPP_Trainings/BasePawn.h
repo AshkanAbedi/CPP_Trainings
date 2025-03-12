@@ -3,14 +3,13 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "InputActionValue.h"
 #include "GameFramework/Pawn.h"
 #include "BasePawn.generated.h"
 
-struct FInputActionValue;
-class UCapsuleComponent;
+struct FInputActionInstance;
 class USkeletalMeshComponent;
 class UCameraComponent;
+class UArrowComponent;
 class UInputAction;
 class UInputMappingContext;
 
@@ -31,14 +30,14 @@ public:
 	// Sets default values for this pawn's properties
 	ABasePawn();
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Components")
-	TObjectPtr<UCapsuleComponent> CapsuleComponent;
-
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Components")
 	TObjectPtr<USkeletalMeshComponent> BaseSkeletalMesh;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Components")
 	TObjectPtr<UCameraComponent> BaseCamera;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Components")
+	TObjectPtr<UArrowComponent> ForwardArrow;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Input")
 	TObjectPtr<UInputMappingContext> InputMappingContext;
@@ -52,12 +51,17 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Input")
 	TObjectPtr<UInputAction> InputTurnLeft;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Movement")
+	float MoveSpeed;
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Pawn")
 	EPlayerStates PlayerStates;
 
-	void MoveForward (const FInputActionValue& Value);
-	void TurnRight (const FInputActionValue& Value);
-	void TurnLeft (const FInputActionValue& Value);
+	void MoveForward (const FInputActionInstance& Value);
+	void TurnRight (const FInputActionInstance& Value);
+	void TurnLeft (const FInputActionInstance& Value);
+
+	
 
 protected:
 	// Called when the game starts or when spawned

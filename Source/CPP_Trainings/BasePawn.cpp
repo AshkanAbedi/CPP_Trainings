@@ -1,16 +1,13 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
+#include "Public/BaseMacros.h"
 #include "BasePawn.h"
-#include "Components/CapsuleComponent.h"
 #include "Components/SkeletalMeshComponent.h"
 #include "Camera/CameraComponent.h"
-#include "InputMappingContext.h"
+#include "Components/ArrowComponent.h"
 #include "InputAction.h"
+#include "InputActionValue.h"
 #include "EnhancedInputComponent.h"
-#include "EnhancedInputSubsystems.h"
-
-#define LOG_LOCATION GEngine->AddOnScreenDebugMessage(1, 5.f, FColor::Red, FString::Printf(TEXT("Location: %s, Rotation: %s"), *GetActorLocation().ToString(), *GetActorRotation().ToString()))
-
 
 // Sets default values
 ABasePawn::ABasePawn()
@@ -18,16 +15,23 @@ ABasePawn::ABasePawn()
  	// Set this pawn to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
-	CapsuleComponent = CreateDefaultSubobject<UCapsuleComponent>(TEXT("Capsule Component"));
-	RootComponent = CapsuleComponent;
-
 	BaseSkeletalMesh = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("Base Skeletal Mesh"));
 	BaseSkeletalMesh->SetupAttachment(RootComponent);
 
-	BaseCamera = CreateDefaultSubobject<UCameraComponent>(TEXT("Base Camera"));
-	BaseCamera->SetupAttachment(RootComponent);
+	BaseSkeletalMesh->SetWorldRotation(FRotator(0.f, -90.0f, 0.f));
 
-	AutoReceiveInput = EAutoReceiveInput::Player0;
+	ForwardArrow = CreateDefaultSubobject<UArrowComponent>(TEXT("Forward Arrow"));
+	ForwardArrow->SetupAttachment(BaseSkeletalMesh);
+	
+	ForwardArrow->SetWorldRotation(FRotator(0.f, 90.f, 0.f));
+	ForwardArrow->SetHiddenInGame(false);
+
+	BaseCamera = CreateDefaultSubobject<UCameraComponent>(TEXT("Base Camera"));
+	BaseCamera->SetupAttachment(BaseSkeletalMesh);
+
+	MoveSpeed = 150.f;
+
+	AutoPossessPlayer = EAutoReceiveInput::Player0;
 	
 }
 
@@ -35,43 +39,35 @@ ABasePawn::ABasePawn()
 void ABasePawn::BeginPlay()
 {
 	Super::BeginPlay();
-	PlayerStates = EPlayerStates::Normal;
-
-	auto EnhancedInputSubsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(GetWorld()->GetFirstLocalPlayerFromController());
-	if (EnhancedInputSubsystem != nullptr)
-	{
-		EnhancedInputSubsystem->AddMappingContext(InputMappingContext, 0);
-		UE_LOG(LogTemp, Warning, TEXT("EnhancedInputSubsystem is found!"));
-	}
-	else
-	{
-		UE_LOG(LogTemp, Warning, TEXT("EnhancedInputSubsystem is not found!"));
-	}
+	//PlayerStates = EPlayerStates::Normal;
 }
 
 
-void ABasePawn::MoveForward(const FInputActionValue& Value)
+void ABasePawn::MoveForward(const FInputActionInstance& Value)
 {
-	if (PlayerStates == EPlayerStates::Normal)
+	float InputValue = Value.GetValue().Get<float>();
+	
+	if (InputValue != 0)
 	{
-		AddMovementInput(this->GetActorForwardVector(), Value.GetMagnitude());
-		PlayerStates = EPlayerStates::Walking;
+		//AddMovementInput(ForwardArrow->GetForwardVector(), InputValue * MoveSpeed);
+		AddActorLocalOffset(GetActorForwardVector() * InputValue * MoveSpeed * GetWorld()->GetDeltaSeconds());
+		//PlayerStates = EPlayerStates::Walking;
 	}
 }
 
-void ABasePawn::TurnRight(const FInputActionValue& Value)
+void ABasePawn::TurnRight(const FInputActionInstance& Value)
 {
 	if (PlayerStates == EPlayerStates::Normal || PlayerStates == EPlayerStates::Walking)
 	{
-		AddControllerYawInput(Value.GetMagnitude());
+		AddControllerYawInput(Value.GetElapsedTime());
 	}
 }
 
-void ABasePawn::TurnLeft(const FInputActionValue& Value)
+void ABasePawn::TurnLeft(const FInputActionInstance& Value)
 {
 	if (PlayerStates == EPlayerStates::Normal || PlayerStates == EPlayerStates::Walking)
 	{
-		AddControllerPitchInput(Value.GetMagnitude());
+		AddControllerPitchInput(Value.GetElapsedTime());
 	}
 }
 
@@ -79,18 +75,21 @@ void ABasePawn::TurnLeft(const FInputActionValue& Value)
 void ABasePawn::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-	LOG_LOCATION;
+	PRINT("Location: %s, Rotation: %s", Green, *GetActorLocation().ToString(), *GetActorRotation().ToString());
 }
 
 // Called to bind functionality to input
 void ABasePawn::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
-	UEnhancedInputComponent* EnhancedInputComponent = CastChecked<UEnhancedInputComponent>(PlayerInputComponent);
 
-	EnhancedInputComponent->BindAction(InputMoveForward, ETriggerEvent::Triggered, this, &ABasePawn::MoveForward);
-	EnhancedInputComponent->BindAction(InputTurnRight, ETriggerEvent::Triggered, this, &ABasePawn::TurnRight);
-	EnhancedInputComponent->BindAction(InputTurnLeft, ETriggerEvent::Triggered, this, &ABasePawn::TurnLeft);
+	if (UEnhancedInputComponent* EnhancedInputComponent = Cast<UEnhancedInputComponent>(PlayerInputComponent)) {
+
+		EnhancedInputComponent->BindAction(InputMoveForward, ETriggerEvent::Triggered, this, &ABasePawn::MoveForward);
+		EnhancedInputComponent->BindAction(InputTurnRight, ETriggerEvent::Triggered, this, &ABasePawn::TurnRight);
+		EnhancedInputComponent->BindAction(InputTurnLeft, ETriggerEvent::Triggered, this, &ABasePawn::TurnLeft);
+
+	}
 
 }
 
