@@ -8,8 +8,9 @@
 
 struct FInputActionInstance;
 class USkeletalMeshComponent;
-class UCameraComponent;
+//class UCameraComponent;
 class UArrowComponent;
+class UInputComponent;
 class UInputAction;
 class UInputMappingContext;
 
@@ -36,8 +37,8 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Components")
 	TObjectPtr<USkeletalMeshComponent> BaseSkeletalMesh;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Components")
-	TObjectPtr<UCameraComponent> BaseCamera;
+	/*UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Components")
+	TObjectPtr<UCameraComponent> BaseCamera;*/
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Components")
 	TObjectPtr<UArrowComponent> ForwardArrow;
@@ -75,11 +76,11 @@ protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
-public:	
+public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
 	// Called to bind functionality to input
-	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
+	virtual void SetupPlayerInputComponent(UInputComponent* PlayerInputComponent) override;
 
 };

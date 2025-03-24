@@ -37,6 +37,10 @@
 		{
 			"Name": "BlueprintStats",
 			"Enabled": true
+		},
+		{
+			"Name": "RawInput",
+			"Enabled": true
 		}
 	]
 }

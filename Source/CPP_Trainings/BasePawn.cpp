@@ -3,7 +3,6 @@
 #include "BasePawn.h"
 #include "Public/BaseMacros.h"
 #include "Components/SkeletalMeshComponent.h"
-#include "Camera/CameraComponent.h"
 #include "Components/ArrowComponent.h"
 #include "InputAction.h"
 #include "InputActionValue.h"
@@ -28,13 +27,11 @@ ABasePawn::ABasePawn()
 	ForwardArrow->SetupAttachment(RootComponent);
 	
 	ForwardArrow->SetHiddenInGame(false);
-
-	BaseCamera = CreateDefaultSubobject<UCameraComponent>(TEXT("Base Camera"));
-	BaseCamera->SetupAttachment(RootComponent);
-	
-	bUseControllerRotationYaw = true;
 	
 	AutoPossessPlayer = EAutoReceiveInput::Player0;
+
+	SpeedMultiplier = 200.f;
+	TurnRate = 100.f;
 	
 }
 
@@ -56,7 +53,7 @@ void ABasePawn::MoveForward(const FInputActionInstance& Value)
 		Velocity =+ DeltaLocation.Size() / DeltaTime; 
 		AddActorLocalOffset(DeltaLocation);
 		PlayerStates = EPlayerStates::Walking;
-		PRINT(1, "Delta Location Size: %f", Purple, DeltaLocation.Size());
+		PRINT(4, "Delta Location Size: %f", Purple, DeltaLocation.Size());
 	}
 }
 
@@ -67,8 +64,6 @@ void ABasePawn::Turn(const FInputActionInstance& Value)
 	const FRotator DeltaRotation = FRotator(0.f, Value.GetValue().Get<float>() * TurnRate * DeltaTime, 0.f);
 	
 	this->AddActorWorldRotation(DeltaRotation);
-
-	//AddControllerYawInput(Value.GetTriggeredTime());
 	
 }
 
@@ -81,8 +76,8 @@ void ABasePawn::StopMoving()
 void ABasePawn::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-	PRINT(2, "Location: %s, Rotation: %s", Green, *GetActorLocation().ToString(), *GetActorRotation().ToString());
-	PRINT(3, "Velocity: %f", Purple, Velocity);
+	PRINT(5, "Location: %s, Rotation: %s", Green, *GetActorLocation().ToString(), *GetActorRotation().ToString());
+	PRINT(6, "Velocity: %f", Purple, Velocity);
 }
 
 // Called to bind functionality to input
@@ -91,6 +86,8 @@ void ABasePawn::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 
 	if (UEnhancedInputComponent* EnhancedInputComponent = Cast<UEnhancedInputComponent>(PlayerInputComponent)) {
+
+		PRINT(7, "Enhanced Input Component Found", Green);
 
 		EnhancedInputComponent->BindAction(InputMoveForward, ETriggerEvent::Triggered, this, &ABasePawn::MoveForward);
 		EnhancedInputComponent->BindAction(InputMoveForward, ETriggerEvent::Completed, this, &ABasePawn::StopMoving);
@@ -101,7 +98,7 @@ void ABasePawn::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 
 void ABasePawn::CastRecognition()
 {
-	PRINT(4, "Hello, Your Pawn is Here!", Green);
+	PRINT(8, "Hello, Your Pawn is Here!", Green);
 }
 
 
