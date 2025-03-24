@@ -30,13 +30,16 @@ public:
 	// Sets default values for this pawn's properties
 	ABasePawn();
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Components")
+	TObjectPtr<USceneComponent> SceneComponent;
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Components")
 	TObjectPtr<USkeletalMeshComponent> BaseSkeletalMesh;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Components")
 	TObjectPtr<UCameraComponent> BaseCamera;
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Components")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Components")
 	TObjectPtr<UArrowComponent> ForwardArrow;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Input")
@@ -52,17 +55,22 @@ public:
 	TObjectPtr<UInputAction> InputTurnLeft;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Movement")
-	float MoveSpeed;
+	float SpeedMultiplier;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Pawn")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Movement")
+	float TurnRate;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Movement")
+	float Velocity;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Pawn|State")
 	EPlayerStates PlayerStates;
-
-	void MoveForward (const FInputActionInstance& Value);
-	void TurnRight (const FInputActionInstance& Value);
-	void TurnLeft (const FInputActionInstance& Value);
-
 	
-
+	void MoveForward (const FInputActionInstance& Value);
+	void Turn (const FInputActionInstance& Value);
+	void StopMoving();
+	static void CastRecognition();
+	
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;

@@ -2,7 +2,7 @@
 
 #include "CoreMinimal.h"
 
-#define PRINT(Message, Color, ...) GEngine->AddOnScreenDebugMessage(1, 3, FColor::Color, FString::Printf(TEXT(Message), ##__VA_ARGS__))
+#define PRINT(LineNumber, Message, Color, ...) GEngine->AddOnScreenDebugMessage(LineNumber, 3, FColor::Color, FString::Printf(TEXT(Message), ##__VA_ARGS__))
 
 
 
