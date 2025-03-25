@@ -8,7 +8,6 @@
 
 struct FInputActionInstance;
 class USkeletalMeshComponent;
-//class UCameraComponent;
 class UArrowComponent;
 class UInputComponent;
 class UInputAction;
@@ -36,9 +35,6 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Components")
 	TObjectPtr<USkeletalMeshComponent> BaseSkeletalMesh;
-
-	/*UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Components")
-	TObjectPtr<UCameraComponent> BaseCamera;*/
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Components")
 	TObjectPtr<UArrowComponent> ForwardArrow;
