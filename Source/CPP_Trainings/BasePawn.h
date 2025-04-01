@@ -7,6 +7,7 @@
 #include "BasePawn.generated.h"
 
 struct FInputActionInstance;
+class UCapsuleComponent;
 class USkeletalMeshComponent;
 class UArrowComponent;
 class UInputComponent;
@@ -14,7 +15,7 @@ class UInputAction;
 class UInputMappingContext;
 
 UENUM(BlueprintType)
-enum class EPlayerStates : uint8
+enum class EPlayerState : uint8
 {
 	Normal,
 	Walking,
@@ -30,8 +31,8 @@ public:
 	// Sets default values for this pawn's properties
 	ABasePawn();
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Components")
-	TObjectPtr<USceneComponent> SceneComponent;
+	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = "Components")
+	TObjectPtr<UCapsuleComponent> CapsuleComponent;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Components")
 	TObjectPtr<USkeletalMeshComponent> BaseSkeletalMesh;
@@ -61,13 +62,13 @@ public:
 	float Velocity;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Pawn|State")
-	EPlayerStates PlayerStates;
-	
-	void MoveForward (const FInputActionInstance& Value);
-	void Turn (const FInputActionInstance& Value);
+	EPlayerState PlayerStates;
+
+	void MoveForward(const FInputActionInstance& Value);
+	void Turn(const FInputActionInstance& Value);
 	void StopMoving();
 	static void CastRecognition();
-	
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
@@ -78,5 +79,4 @@ public:
 
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(UInputComponent* PlayerInputComponent) override;
-
 };

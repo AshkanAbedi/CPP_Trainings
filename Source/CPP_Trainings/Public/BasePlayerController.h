@@ -6,8 +6,9 @@
 #include "GameFramework/PlayerController.h"
 #include "BasePlayerController.generated.h"
 
+class ABaseCamera;
 class ABaseGameMode;
-class ABasePawn;
+class ABaseCharacter;
 
 UCLASS()
 class CPP_TRAININGS_API ABasePlayerController : public APlayerController
@@ -16,16 +17,17 @@ class CPP_TRAININGS_API ABasePlayerController : public APlayerController
 
 public:
 	ABasePlayerController();
+	void SwitchCamera(ABaseCamera* NewCamera);
 	
 protected:
 	virtual void BeginPlay() override;
 	virtual void Tick(float DeltaSeconds) override;
 	ABaseGameMode* GetCurrentGameMode() const;
-	ABasePawn* GetCurrentPawn() const;
+	ABaseCharacter* GetCurrentCharacter() const;
 	void CheckScreenEdges();
 	
 private:
 	TObjectPtr<ABaseGameMode> GameMode;
-	TObjectPtr<ABasePawn> Pawn;
+	TObjectPtr<ABaseCharacter> Character;
 	
 };

@@ -6,7 +6,7 @@
 #include "Animation/AnimInstance.h"
 #include "BaseAnimInstance.generated.h"
 
-class ABasePawn;
+class ABaseCharacter;
 
 UCLASS()
 class CPP_TRAININGS_API UBaseAnimInstance : public UAnimInstance
@@ -21,8 +21,8 @@ public:
 
 protected:
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Pawn)
-	TObjectPtr<ABasePawn>Pawn;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = Character)
+	TObjectPtr<ABaseCharacter> Character;
 	
 private:
 	

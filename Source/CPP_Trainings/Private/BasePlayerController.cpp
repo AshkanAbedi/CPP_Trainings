@@ -2,7 +2,9 @@
 
 #include "BasePlayerController.h"
 #include "BaseGameMode.h"
-#include "CPP_Trainings/BasePawn.h"
+#include "BaseCharacter.h"
+#include "BaseCamera.h"
+#include "Components/BoxComponent.h"
 #include "Kismet/GameplayStatics.h"
 
 ABasePlayerController::ABasePlayerController()
@@ -15,13 +17,12 @@ void ABasePlayerController::BeginPlay()
 	Super::BeginPlay();
 	GameMode = GetCurrentGameMode();
 	SetViewTarget(GameMode->CameraActors[0]);
-	Pawn = GetCurrentPawn();
+	Character = GetCurrentCharacter();
 }
 
 void ABasePlayerController::Tick(float DeltaSeconds)
 {
 	Super::Tick(DeltaSeconds);
-	CheckScreenEdges();
 }
 
 ABaseGameMode* ABasePlayerController::GetCurrentGameMode() const
@@ -33,26 +34,43 @@ ABaseGameMode* ABasePlayerController::GetCurrentGameMode() const
 	return nullptr;
 }
 
-ABasePawn* ABasePlayerController::GetCurrentPawn() const
+ABaseCharacter* ABasePlayerController::GetCurrentCharacter() const
 {
-	if (ABasePawn* BasePawn = Cast<ABasePawn>(UGameplayStatics::GetPlayerPawn(GetWorld(), 0)))
+	if (ABaseCharacter* BaseCharacter = Cast<ABaseCharacter>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0)))
 	{
-		return BasePawn;
+		return BaseCharacter;
 	}
 	return nullptr;
 }
 
+void ABasePlayerController::SwitchCamera(ABaseCamera* NewCamera)
+{
+	if (NewCamera && GetViewTarget() != NewCamera)
+	{
+		if (const ABaseCamera* PreviousCamera = Cast<ABaseCamera>(GetViewTarget()))
+		{
+			PreviousCamera->BoxComponent01->SetGenerateOverlapEvents(true);
+			PreviousCamera->BoxComponent02->SetGenerateOverlapEvents(true);
+		}
+		
+		SetViewTarget(NewCamera);
+		NewCamera->BoxComponent01->SetGenerateOverlapEvents(false);
+		NewCamera->BoxComponent02->SetGenerateOverlapEvents(false);
+	}
+}
+
+
 void ABasePlayerController::CheckScreenEdges()
 {
-	const FVector PawnCurrentLocation = Pawn->GetActorLocation();
+	const FVector CharacterCurrentLocation = Character->GetActorLocation();
 	FVector2d ScreenLocation;
-	bool bIsOnScreen = this->ProjectWorldLocationToScreen(PawnCurrentLocation, ScreenLocation);
+	const bool bIsOnScreen = this->ProjectWorldLocationToScreen(CharacterCurrentLocation, ScreenLocation);
 	FVector2D ViewportSize;
 	GEngine->GameViewport->GetViewportSize(ViewportSize);
 
 	if (!bIsOnScreen || ScreenLocation.X < 0 || ScreenLocation.X > ViewportSize.X || 
 		ScreenLocation.Y < 0 || ScreenLocation.Y > ViewportSize.Y)
 	{
-		SetViewTargetWithBlend(GameMode->CameraActors[1], 1.f);
+		SetViewTarget(GameMode->CameraActors[1]);
 	}
 }
