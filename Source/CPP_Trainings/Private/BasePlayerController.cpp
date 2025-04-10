@@ -4,25 +4,18 @@
 #include "BaseGameMode.h"
 #include "BaseCharacter.h"
 #include "BaseCamera.h"
-#include "Components/BoxComponent.h"
 #include "Kismet/GameplayStatics.h"
 
 ABasePlayerController::ABasePlayerController()
 {
-	PrimaryActorTick.bCanEverTick = true;
 }
 
 void ABasePlayerController::BeginPlay()
 {
 	Super::BeginPlay();
 	GameMode = GetCurrentGameMode();
-	SetViewTarget(GameMode->CameraActors[0]);
+	SetViewTarget(GameMode->CameraActors[3]);
 	Character = GetCurrentCharacter();
-}
-
-void ABasePlayerController::Tick(float DeltaSeconds)
-{
-	Super::Tick(DeltaSeconds);
 }
 
 ABaseGameMode* ABasePlayerController::GetCurrentGameMode() const
@@ -49,13 +42,12 @@ void ABasePlayerController::SwitchCamera(ABaseCamera* NewCamera)
 	{
 		if (const ABaseCamera* PreviousCamera = Cast<ABaseCamera>(GetViewTarget()))
 		{
-			PreviousCamera->BoxComponent01->SetGenerateOverlapEvents(true);
-			PreviousCamera->BoxComponent02->SetGenerateOverlapEvents(true);
+			//PreviousCamera->BoxComponent01->SetGenerateOverlapEvents(true);
+			//PreviousCamera->BoxComponent02->SetGenerateOverlapEvents(true);
 		}
-		
 		SetViewTarget(NewCamera);
-		NewCamera->BoxComponent01->SetGenerateOverlapEvents(false);
-		NewCamera->BoxComponent02->SetGenerateOverlapEvents(false);
+		//NewCamera->BoxComponent01->SetGenerateOverlapEvents(false);
+		//NewCamera->BoxComponent02->SetGenerateOverlapEvents(false);
 	}
 }
 

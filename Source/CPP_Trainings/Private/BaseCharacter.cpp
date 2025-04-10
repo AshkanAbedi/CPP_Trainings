@@ -3,6 +3,7 @@
 #include "BaseCharacter.h"
 #include "BaseMacros.h"
 #include "Components/ArrowComponent.h"
+#include "BasePlayerController.h"
 #include "InputAction.h"
 #include "InputActionValue.h"
 #include "EnhancedInputComponent.h"
@@ -45,7 +46,7 @@ void ABaseCharacter::TurnRight(const FInputActionInstance& Value)
 {
 	if (Controller)
 	{
-		AddControllerYawInput(Value.GetValue().Get<float>() * TurnRate * GetWorld()->GetDeltaSeconds());
+		AddControllerYawInput(GetActorRightVector().GetAbsMax() * TurnRate * GetWorld()->GetDeltaSeconds());
 	}
 }
 
@@ -53,7 +54,7 @@ void ABaseCharacter::TurnLeft(const FInputActionInstance& Value)
 {
 	if (Controller)
 	{
-		AddControllerYawInput(Value.GetValue().Get<float>() * TurnRate * -1.0f * GetWorld()->GetDeltaSeconds());
+		AddControllerYawInput(GetActorRightVector().GetAbsMax() * TurnRate * -1.0f * GetWorld()->GetDeltaSeconds());
 	}
 }
 
@@ -61,6 +62,15 @@ void ABaseCharacter::StopMoving()
 {
 	Velocity = 0.0f;
 	bIsWalking = false;
+}
+
+ABasePlayerController* ABaseCharacter::GetPlayerController() const
+{
+	if (ABasePlayerController* BasePlayerController = Cast<ABasePlayerController>(GetController()))
+	{
+		return BasePlayerController;
+	}
+	return nullptr;
 }
 
 // Called every frame

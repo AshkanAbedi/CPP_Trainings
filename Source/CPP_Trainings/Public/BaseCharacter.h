@@ -6,6 +6,7 @@
 #include "GameFramework/Character.h"
 #include "BaseCharacter.generated.h"
 
+class ABasePlayerController;
 struct FInputActionInstance;
 class UInputMappingContext;
 class UInputAction;
@@ -58,6 +59,7 @@ public:
 	void TurnRight(const FInputActionInstance& Value);
 	void TurnLeft(const FInputActionInstance& Value);
 	void StopMoving();
+	ABasePlayerController* GetPlayerController() const;
 
 protected:
 	// Called when the game starts or when spawned

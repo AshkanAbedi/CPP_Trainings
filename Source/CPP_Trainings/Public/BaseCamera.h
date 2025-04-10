@@ -6,7 +6,8 @@
 #include "Camera/CameraActor.h"
 #include "BaseCamera.generated.h"
 
-class UBoxComponent;
+class ABaseCharacter;
+class USpringArmComponent;
 
 UCLASS()
 class CPP_TRAININGS_API ABaseCamera : public ACameraActor
@@ -15,15 +16,21 @@ class CPP_TRAININGS_API ABaseCamera : public ACameraActor
 
 public:
 	ABaseCamera();
-	
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	TObjectPtr<UBoxComponent> BoxComponent01;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	TObjectPtr<UBoxComponent> BoxComponent02;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = Component)
+	TObjectPtr<USpringArmComponent> SpringArmComponent;
+
+	virtual void BeginPlay() override;
+	virtual void Tick(float DeltaTime) override;
+	void PitchUpdate(float DeltaTime);
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Behavior)
+	bool bFollowCharacter;
 	
+	UPROPERTY()
+	ABaseCharacter* PlayerCharacter;
+	float OriginalPitch;
+	FTimerHandle PitchUpdateTimerHandle;
 protected:
-	UFUNCTION()
-	void OnEnterTriggerBox(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& Hit);
 	
 };
