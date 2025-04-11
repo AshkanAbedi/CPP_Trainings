@@ -14,8 +14,8 @@ void ABasePlayerController::BeginPlay()
 {
 	Super::BeginPlay();
 	GameMode = GetCurrentGameMode();
-	SetViewTarget(GameMode->CameraActors[3]);
 	Character = GetCurrentCharacter();
+	SetViewTarget(GameMode->CameraActors[0]);
 }
 
 ABaseGameMode* ABasePlayerController::GetCurrentGameMode() const
@@ -40,17 +40,9 @@ void ABasePlayerController::SwitchCamera(ABaseCamera* NewCamera)
 {
 	if (NewCamera && GetViewTarget() != NewCamera)
 	{
-		if (const ABaseCamera* PreviousCamera = Cast<ABaseCamera>(GetViewTarget()))
-		{
-			//PreviousCamera->BoxComponent01->SetGenerateOverlapEvents(true);
-			//PreviousCamera->BoxComponent02->SetGenerateOverlapEvents(true);
-		}
 		SetViewTarget(NewCamera);
-		//NewCamera->BoxComponent01->SetGenerateOverlapEvents(false);
-		//NewCamera->BoxComponent02->SetGenerateOverlapEvents(false);
 	}
 }
-
 
 void ABasePlayerController::CheckScreenEdges()
 {

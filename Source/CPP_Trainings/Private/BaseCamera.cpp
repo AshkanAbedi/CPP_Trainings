@@ -38,47 +38,39 @@ void ABaseCamera::Tick(float DeltaTime)
 	
 	if (bFollowCharacter)
 	{
-		PitchUpdate(DeltaTime);	
+		PitchYawUpdate(DeltaTime);	
 	}
 }
 
-void ABaseCamera::PitchUpdate(float DeltaTime)
+void ABaseCamera::PitchYawUpdate(float DeltaTime)
 {
-		// Get the root bone's world location
 	const FVector CharacterLocation = PlayerCharacter->GetActorLocation();
-
-			// Camera's fixed location
+	
 	const FVector BoomLocation = SpringArmComponent->GetComponentLocation();
+	
+	const FVector DirectionToCharacter = (CharacterLocation - BoomLocation).GetSafeNormal();
 
-			// Direction from camera to root bone
-	const FVector DirectionToBone = (CharacterLocation - BoomLocation).GetSafeNormal();
+	const FRotator TargetRotation = DirectionToCharacter.Rotation();
 
-			// Convert direction to rotation
-	const FRotator TargetRotation = DirectionToBone.Rotation();
-
-			// Get current rotation
 	const FRotator CurrentRotation = SpringArmComponent->GetComponentRotation();
 
 	float DeltaYaw = TargetRotation.Yaw - CurrentRotation.Yaw;
 	
-	if (DeltaYaw > 180.0f)
+	if (DeltaYaw >= 180.0f)
 	{
 		DeltaYaw -= 360.0f;
-	} else if (DeltaYaw < -180.f)
+	} else if (DeltaYaw <= -180.f)
 	{
 		DeltaYaw += 360.0f;
 	}
 
-			// Smoothly interpolate pitch and yaw (ignore roll)
-	constexpr float AdjustmentSpeed = 2.0f; // Smoothness factor
+	constexpr float AdjustmentSpeed = 2.0f;
 	const float NewPitch = FMath::FInterpTo(CurrentRotation.Pitch, TargetRotation.Pitch, DeltaTime, AdjustmentSpeed);
 	const float NewYaw = CurrentRotation.Yaw + FMath::FInterpTo(0.0f, DeltaYaw, DeltaTime, AdjustmentSpeed);
 
-			// Clamp pitch to reasonable bounds
 	const float ClampedPitch = FMath::Clamp(NewPitch, -90.0f, 90.0f);
-	const float ClampedYaw = FMath::Clamp(NewYaw, -180.0f, 180.0f);
+	const float ClampedYaw = FMath::Clamp(NewYaw, -181.0f, 181.0f);
 
-			// Apply new rotation (keep roll unchanged)
 	const FRotator NewRotation(ClampedPitch, ClampedYaw, CurrentRotation.Roll);
 	SpringArmComponent->SetWorldRotation(NewRotation);
 

@@ -2,10 +2,9 @@
 
 #include "BaseCharacter.h"
 #include "BaseMacros.h"
-#include "Components/ArrowComponent.h"
 #include "BasePlayerController.h"
+#include "Components/ArrowComponent.h"
 #include "InputAction.h"
-#include "InputActionValue.h"
 #include "EnhancedInputComponent.h"
 
 // Sets default values

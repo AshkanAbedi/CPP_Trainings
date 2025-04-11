@@ -22,13 +22,14 @@ public:
 
 	virtual void BeginPlay() override;
 	virtual void Tick(float DeltaTime) override;
-	void PitchUpdate(float DeltaTime);
+	void PitchYawUpdate(float DeltaTime);
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Behavior)
 	bool bFollowCharacter;
 	
 	UPROPERTY()
 	ABaseCharacter* PlayerCharacter;
+	
 	float OriginalPitch;
 	FTimerHandle PitchUpdateTimerHandle;
 protected:
