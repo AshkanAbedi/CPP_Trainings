@@ -3,9 +3,10 @@
 // ReSharper disable CppParameterMayBeConstPtrOrRef
 #include "BaseCamera.h"
 #include "BaseMacros.h"
-#include "GameFramework/SpringArmComponent.h"
 #include "BaseCharacter.h"
+#include "GameFramework/SpringArmComponent.h"
 #include "Camera/CameraComponent.h"
+#include "Components/SplineComponent.h"
 #include "Kismet/GameplayStatics.h"
 
 ABaseCamera::ABaseCamera()
@@ -13,10 +14,12 @@ ABaseCamera::ABaseCamera()
 	PrimaryActorTick.bCanEverTick = true;
 
 	SpringArmComponent = CreateDefaultSubobject<USpringArmComponent>(TEXT("SpringArmComponent"));
-
-	RootComponent = SpringArmComponent;
-
+	SpringArmComponent->SetupAttachment(RootComponent);
+	SpringArmComponent->TargetArmLength = 10.0f;
 	GetCameraComponent()->SetupAttachment(SpringArmComponent);
+
+	SplineComponent = CreateDefaultSubobject<USplineComponent>(TEXT("Spline Component"));
+	SplineComponent->SetupAttachment(RootComponent);
 	
 }
 
@@ -35,6 +38,29 @@ void ABaseCamera::BeginPlay()
 void ABaseCamera::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+
+	// Find closest point on spline to character
+	const float InputKey = SplineComponent->FindInputKeyClosestToWorldLocation(PlayerCharacter->GetActorLocation());
+	const FVector ClosestPoint = SplineComponent->GetLocationAtSplineInputKey(InputKey, ESplineCoordinateSpace::World);
+
+	// Calculate distance
+	const float Distance = FVector::Distance(PlayerCharacter->GetActorLocation(), ClosestPoint);
+
+	// Normalize distance (0 = at spline, 1 = MaxDistance)
+	const float NormalizedDistance = FMath::Clamp(Distance / 10000.0f, 0.0f, 1.0f);
+
+	// Invert to increase position when closer (close → 1, far → 0)
+	const float Influence = 1.0f - NormalizedDistance;
+
+	// Adjust CurrentPositionOnSpline
+	//CurrentPositionOnSpline += Influence * SpeedOnSpline * DeltaTime;
+	CurrentPositionOnSpline = FMath::Clamp(Influence, 0.0f, 1.0f);
+
+	// Move spring arm along spline
+	const FVector NewLocOnSpline = SplineComponent->GetLocationAtSplineInputKey(Influence, ESplineCoordinateSpace::World);
+	SpringArmComponent->SetWorldLocation(NewLocOnSpline);
+
+	PRINT(0, "(Current Position on Spline: %s)", Green, *NewLocOnSpline.ToString());
 	
 	if (bFollowCharacter)
 	{
@@ -42,7 +68,7 @@ void ABaseCamera::Tick(float DeltaTime)
 	}
 }
 
-void ABaseCamera::PitchYawUpdate(float DeltaTime)
+void ABaseCamera::PitchYawUpdate(float DeltaTime) const
 {
 	const FVector CharacterLocation = PlayerCharacter->GetActorLocation();
 	
@@ -68,7 +94,7 @@ void ABaseCamera::PitchYawUpdate(float DeltaTime)
 	const float NewPitch = FMath::FInterpTo(CurrentRotation.Pitch, TargetRotation.Pitch, DeltaTime, AdjustmentSpeed);
 	const float NewYaw = CurrentRotation.Yaw + FMath::FInterpTo(0.0f, DeltaYaw, DeltaTime, AdjustmentSpeed);
 
-	const float ClampedPitch = FMath::Clamp(NewPitch, -90.0f, 90.0f);
+	const float ClampedPitch = FMath::Clamp(NewPitch, -91.0f, 91.0f);
 	const float ClampedYaw = FMath::Clamp(NewYaw, -181.0f, 181.0f);
 
 	const FRotator NewRotation(ClampedPitch, ClampedYaw, CurrentRotation.Roll);

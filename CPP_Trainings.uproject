@@ -42,6 +42,10 @@
 		{
 			"Name": "RawInput",
 			"Enabled": true
+		},
+		{
+			"Name": "CineCameraRigs",
+			"Enabled": true
 		}
 	]
 }
