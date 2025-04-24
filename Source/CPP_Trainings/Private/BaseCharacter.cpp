@@ -78,6 +78,8 @@ void ABaseCharacter::Tick(float DeltaTime)
 	const double StartTime = FPlatformTime::Seconds();
 	
 	Super::Tick(DeltaTime);
+
+	///this->AddActorWorldOffset(GetActorForwardVector() * MoveRate * 3.0f * DeltaTime);
 	
 	const double EndTime = FPlatformTime::Seconds();
 

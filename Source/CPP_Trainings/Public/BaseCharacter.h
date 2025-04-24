@@ -28,6 +28,8 @@ public:
 	// Sets default values for this character's properties
 	ABaseCharacter();
 
+	
+
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Input")
 	TObjectPtr<UInputMappingContext> InputMappingContext;
 
