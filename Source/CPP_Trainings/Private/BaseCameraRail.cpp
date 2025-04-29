@@ -19,7 +19,7 @@ void ABaseCameraRail::BeginPlay()
 
 	if (ABaseCamera* RailCamera = Cast<ABaseCamera>(CameraActorComponent->GetChildActor()))
 	{
-		RailCamera->bFollowCharacter = true;
+		RailCamera->bPitchFollow = true;
 		RailCamera->GetCameraComponent()->SetFieldOfView((65.0f));
 		RailCamera->GetCameraComponent()->SetAspectRatio(16.0f / 9.0f);
 	}

@@ -30,25 +30,30 @@ public:
 	virtual void Tick(float DeltaTime) override;
 	virtual void BecomeViewTarget(APlayerController* PC) override;
 	virtual void EndViewTarget(APlayerController* PC) override;
-	void PitchYawUpdate(float DeltaTime) const;
-	void MoveOnSpline(float DeltaTime);
-	// void MoveOnCurve(float DeltaTime);
+	void PitchYawFollow(float DeltaTime) const;
+	void MoveOnCurve(float DeltaTime);
 	
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Behavior)
-	bool bFollowCharacter;
+	bool bPitchFollow;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Behavior)
+	bool bYawFollow;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Behavior)
 	bool bMoveOnCurve;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Behavior)
-	bool bReverseMovementOnSpline;
+	bool bReverseMovementOnCurve;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Behavior)
-	float AdjustmentSpeed;
+	float PitchFollowSpeed;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Behavior)
-	float SpeedOnSpline;
+	float YawFollowSpeed;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Behavior)
+	float OnCurveSpeed;
 
 	FVector CameraOriginalPosition;
 

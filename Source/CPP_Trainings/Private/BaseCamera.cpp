@@ -23,9 +23,10 @@ ABaseCamera::ABaseCamera()
 	SplineComponent = CreateDefaultSubobject<USplineComponent>(TEXT("Spline Component"));
 	SplineComponent->SetupAttachment(RootComponent);
 	
-	AdjustmentSpeed = 0.5f;
-	SpeedOnSpline = 0.5f;
-	bReverseMovementOnSpline = false;
+	PitchFollowSpeed = 0.5f;
+	YawFollowSpeed = 0.5f;
+	OnCurveSpeed = 0.5f;
+	bReverseMovementOnCurve = false;
 	
 }
 
@@ -34,7 +35,7 @@ void ABaseCamera::BeginPlay()
 {
 	Super::BeginPlay();
 	
-	if (!bFollowCharacter || !bMoveOnCurve)
+	if (!bPitchFollow && !bYawFollow && !bMoveOnCurve)
 	{
 		PrimaryActorTick.bCanEverTick = false;
 	}
@@ -58,12 +59,12 @@ void ABaseCamera::Tick(float DeltaTime)
 	
 	if (bMoveOnCurve)
 	{
-		MoveOnSpline(DeltaTime);
+		MoveOnCurve(DeltaTime);
 	}
-	
-	if (bFollowCharacter)
+
+	if (bYawFollow || bPitchFollow)
 	{
-		PitchYawUpdate(DeltaTime);	
+		PitchYawFollow(DeltaTime);
 	}
 }
 
@@ -83,43 +84,44 @@ void ABaseCamera::EndViewTarget(APlayerController* PC)
 	SetActorRotation(CameraOriginalRotation);
 }
 
-void ABaseCamera::PitchYawUpdate(float DeltaTime) const
+void ABaseCamera::PitchYawFollow(float DeltaTime) const
 {
 	const FVector CharacterLocation = PlayerCharacter->GetActorLocation();
-	
 	const FVector BoomLocation = SpringArmComponent->GetComponentLocation();
-	
 	const FVector DirectionToCharacter = (CharacterLocation - BoomLocation).GetSafeNormal();
-
 	const FRotator TargetRotation = DirectionToCharacter.Rotation();
-
 	const FRotator CurrentRotation = SpringArmComponent->GetComponentRotation();
+	float NewPitch = CurrentRotation.Pitch;
+	float NewYaw = CurrentRotation.Yaw;
 
-	float DeltaYaw = TargetRotation.Yaw - CurrentRotation.Yaw;
-	
-	if (DeltaYaw >= 180.0f)
+	if (bPitchFollow)
 	{
-		DeltaYaw -= 360.0f;
-	} else if (DeltaYaw <= -180.f)
-	{
-		DeltaYaw += 360.0f;
+		NewPitch = FMath::FInterpTo(CurrentRotation.Pitch, TargetRotation.Pitch, DeltaTime, PitchFollowSpeed);
+		NewPitch = FMath::Clamp(NewPitch, -91.0f, 91.0f);
+		PRINT(1, "Camera Pitch: %f", Green, NewPitch);
 	}
-	
-	const float NewPitch = FMath::FInterpTo(CurrentRotation.Pitch, TargetRotation.Pitch, DeltaTime, AdjustmentSpeed);
-	const float NewYaw = CurrentRotation.Yaw + FMath::FInterpTo(0.0f, DeltaYaw, DeltaTime, AdjustmentSpeed);
 
-	const float ClampedPitch = FMath::Clamp(NewPitch, -91.0f, 91.0f);
-	const float ClampedYaw = FMath::Clamp(NewYaw, -181.0f, 181.0f);
+	if (bYawFollow)
+	{
+		float DeltaYaw = TargetRotation.Yaw - CurrentRotation.Yaw;
+		if (DeltaYaw >= 180.0f)
+		{
+			DeltaYaw -= 360.0f;
+		}
+		else if (DeltaYaw <= -180.0f)
+		{
+			DeltaYaw += 360.0f;
+		}
+		NewYaw = CurrentRotation.Yaw + FMath::FInterpTo(0.0f, DeltaYaw, DeltaTime, YawFollowSpeed);
+		NewYaw = FMath::Clamp(NewYaw, -181.0f, 181.0f);
+		PRINT(2, "Camera Yaw: %f", Green, NewYaw);
+	}
 
-	const FRotator NewRotation(ClampedPitch, ClampedYaw, CurrentRotation.Roll);
+	const FRotator NewRotation(NewPitch, NewYaw, CurrentRotation.Roll);
 	SpringArmComponent->SetWorldRotation(NewRotation);
-
-	PRINT(1, "BoomPitch: %f", Green, SpringArmComponent->GetComponentRotation().Pitch);
-	PRINT(2, "BoomYaw: %f", Green, SpringArmComponent->GetComponentRotation().Yaw);
-	
 }
 
-void ABaseCamera::MoveOnSpline(float DeltaTime)
+void ABaseCamera::MoveOnCurve(float DeltaTime)
 {
 
 	if (!IsValid(PlayerCharacter) || !IsValid(SplineComponent))
@@ -132,58 +134,19 @@ void ABaseCamera::MoveOnSpline(float DeltaTime)
 		const FVector PlayerVelocity = PlayerCharacter->GetVelocity();
 		const FVector SplineTangent = SplineComponent->GetTangentAtSplineInputKey(CurrentPositionOnSpline, ESplineCoordinateSpace::World);
 		const float VelocityComponentAlongSpline = FVector::DotProduct(PlayerVelocity, SplineTangent);
-		const float DirectionalScale = bReverseMovementOnSpline ? -1.0f : 1.0f;
-		const float DeltaDistance = VelocityComponentAlongSpline * DirectionalScale * SpeedOnSpline * DeltaTime;
+		const float DirectionalScale = bReverseMovementOnCurve ? -1.0f : 1.0f;
+		const float DeltaDistance = VelocityComponentAlongSpline * DirectionalScale * OnCurveSpeed * DeltaTime;
 		const float CurrentDistance = SplineComponent->GetDistanceAlongSplineAtSplineInputKey(CurrentPositionOnSpline);
 		const float TargetDistance = CurrentDistance + DeltaDistance;
 		const float TargetSplineInputKey = SplineComponent->GetInputKeyAtDistanceAlongSpline(TargetDistance);
 
-		CurrentPositionOnSpline = FMath::FInterpTo(CurrentPositionOnSpline, TargetSplineInputKey, DeltaTime, SpeedOnSpline);
+		CurrentPositionOnSpline = FMath::FInterpTo(CurrentPositionOnSpline, TargetSplineInputKey, DeltaTime, OnCurveSpeed);
 		CurrentPositionOnSpline = FMath::Clamp(CurrentPositionOnSpline, 0.0f, 1.0f);
 		const FVector NewLocOnSpline = SplineComponent->GetLocationAtSplineInputKey(CurrentPositionOnSpline, ESplineCoordinateSpace::World);
 		SpringArmComponent->SetWorldLocation(NewLocOnSpline);
-		
-		// float InputKey = SplineComponent->FindInputKeyClosestToWorldLocation(PlayerCharacter->GetActorLocation());
-		// InputKey = FMath::Clamp(InputKey, 0.0f, 1.0f);
-		//
-		// CurrentPositionOnSpline = FMath::FInterpTo(CurrentPositionOnSpline, InputKey, DeltaTime, SpeedOnSpline);
-		// CurrentPositionOnSpline = FMath::Clamp(CurrentPositionOnSpline, 0.0f, 1.0f);
-		//
-		// const FVector NewLocOnSpline = SplineComponent->GetLocationAtSplineInputKey(CurrentPositionOnSpline, ESplineCoordinateSpace::World);
-		// SpringArmComponent->SetWorldLocation(NewLocOnSpline);
 	}
 }
 
-// void ABaseCamera::MoveOnCurve(float DeltaTime)
-// {
-// 	if (!IsValid(PlayerCharacter) || !IsValid(SplineComponent)) return;
-// 	
-// 	const FVector FirstSplinePoint = SplineComponent->GetLocationAtSplinePoint(1, ESplineCoordinateSpace::World);
-// 	const FVector LastSplinePoint = SplineComponent->GetLocationAtSplinePoint(0, ESplineCoordinateSpace::World);
-//
-// 	const FVector CurrentPlayerLocation = PlayerCharacter->GetActorLocation();
-// 	
-// 	const float DistanceToFirstPoint = FVector::Distance(CurrentPlayerLocation, FirstSplinePoint);
-// 	const float DistanceToLastPoint = FVector::Distance(CurrentPlayerLocation, LastSplinePoint);
-// 	
-// 	const float TotalDistance = DistanceToFirstPoint + DistanceToLastPoint;
-// 	float NewPositionOnSpline = 0.0f;
-//
-// 	if (TotalDistance > 0.0f)
-// 	{
-// 		NewPositionOnSpline = DistanceToFirstPoint / TotalDistance;
-// 		NewPositionOnSpline = FMath::Clamp(NewPositionOnSpline, 0.0f, 1.0f);
-// 		NewPositionOnSpline = 1.0f - NewPositionOnSpline;
-// 	}
-//
-// 	CurrentPositionOnSpline = FMath::FInterpTo(CurrentPositionOnSpline, NewPositionOnSpline, DeltaTime, SpeedOnSpline);
-// 	CurrentPositionOnSpline = FMath::Clamp(CurrentPositionOnSpline, 0.0f, 1.0f);
-// 	
-// 	const FVector NewLocationForCamera = SplineComponent->GetLocationAtSplineInputKey(CurrentPositionOnSpline, ESplineCoordinateSpace::World);
-// 	SpringArmComponent->SetWorldLocation(NewLocationForCamera);
-//
-// 	PRINT(0, "(Current Position on Spline: %f)", Green, CurrentPositionOnSpline);
-// }
 
 
 
