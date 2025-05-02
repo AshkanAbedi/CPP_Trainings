@@ -11,7 +11,8 @@
 			"AdditionalDependencies": [
 				"Engine",
 				"AnimGraph",
-				"CinematicCamera"
+				"CinematicCamera",
+				"GameplayAbilities"
 			]
 		}
 	],
@@ -45,6 +46,14 @@
 		},
 		{
 			"Name": "CineCameraRigs",
+			"Enabled": true
+		},
+		{
+			"Name": "GameplayAbilities",
+			"Enabled": true
+		},
+		{
+			"Name": "AbilitySystemGameFeatureActions",
 			"Enabled": true
 		}
 	]

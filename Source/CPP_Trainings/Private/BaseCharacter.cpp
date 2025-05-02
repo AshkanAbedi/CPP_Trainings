@@ -6,6 +6,8 @@
 #include "Components/ArrowComponent.h"
 #include "InputAction.h"
 #include "EnhancedInputComponent.h"
+#include "BaseAbilitySystemComponent.h"
+#include "BaseAttributeSet.h"
 
 // Sets default values
 ABaseCharacter::ABaseCharacter()
@@ -17,12 +19,14 @@ ABaseCharacter::ABaseCharacter()
 	GetArrowComponent()->SetHiddenInGame(false);
 	GetArrowComponent()->SetVisibility(true);
 
+	BaseAbilitySystemComponent = CreateDefaultSubobject<UBaseAbilitySystemComponent>(TEXT("BaseAbilitySystemComponent"));
+	BaseAttributeSet = CreateDefaultSubobject<UBaseAttributeSet>(TEXT("BaseAttributeSet"));
+
 	AutoPossessPlayer = EAutoReceiveInput::Player0;
 	AutoReceiveInput = EAutoReceiveInput::Player0;
 	MoveRate = 200.0f;
 	TurnRate = 100.0f;
 	Velocity = 0.f;
-
 }
 
 // Called when the game starts or when spawned
@@ -30,6 +34,13 @@ void ABaseCharacter::BeginPlay()
 {
 	Super::BeginPlay();
 	PlayerStates = EPlayerStates::Normal;
+	
+	BaseAbilitySystemComponent->InitAbilityActorInfo(this, this);
+}
+
+UAbilitySystemComponent* ABaseCharacter::GetAbilitySystemComponent() const
+{
+	return BaseAbilitySystemComponent;
 }
 
 void ABaseCharacter::MoveForward(const FInputActionInstance& Value)
@@ -72,14 +83,9 @@ ABasePlayerController* ABaseCharacter::GetPlayerController() const
 	return nullptr;
 }
 
-// Called every frame
-void ABaseCharacter::Tick(float DeltaTime)
+void ABaseCharacter::StatFPS()
 {
 	const double StartTime = FPlatformTime::Seconds();
-	
-	Super::Tick(DeltaTime);
-
-	///this->AddActorWorldOffset(GetActorForwardVector() * MoveRate * 3.0f * DeltaTime);
 	
 	const double EndTime = FPlatformTime::Seconds();
 
@@ -90,7 +96,15 @@ void ABaseCharacter::Tick(float DeltaTime)
 	const float BudgetPercentage = (DurationMs/16.67f) * 100.0f;
 
 	PRINT(9, "BaseCharacter Tick used %f%% of 16.67ms budget", Purple, BudgetPercentage);
+}
 
+// Called every frame
+void ABaseCharacter::Tick(float DeltaTime)
+{
+	Super::Tick(DeltaTime);\
+	StatFPS();
+	PRINT(7, "Current Health: %f", Green, BaseAttributeSet->GetHealth());
+	PRINT(8, "Max Health: %f", Green, BaseAttributeSet->GetMaxHealth());
 }
 
 // Called to bind functionality to input

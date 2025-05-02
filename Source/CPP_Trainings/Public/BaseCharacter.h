@@ -3,13 +3,16 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "AbilitySystemInterface.h"
 #include "GameFramework/Character.h"
 #include "BaseCharacter.generated.h"
 
 class ABasePlayerController;
-struct FInputActionInstance;
 class UInputMappingContext;
 class UInputAction;
+struct FInputActionInstance;
+class UBaseAbilitySystemComponent;
+class UBaseAttributeSet;
 
 UENUM(BlueprintType)
 enum class EPlayerStates : uint8
@@ -19,17 +22,15 @@ enum class EPlayerStates : uint8
 	Turning
 };
 
-UCLASS()
-class CPP_TRAININGS_API ABaseCharacter : public ACharacter
+UCLASS(config=Game)
+class CPP_TRAININGS_API ABaseCharacter : public ACharacter, public IAbilitySystemInterface
 {
 	GENERATED_BODY()
 
 public:
 	// Sets default values for this character's properties
 	ABaseCharacter();
-
 	
-
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Input")
 	TObjectPtr<UInputMappingContext> InputMappingContext;
 
@@ -62,10 +63,19 @@ public:
 	void TurnLeft(const FInputActionInstance& Value);
 	void StopMoving();
 	ABasePlayerController* GetPlayerController() const;
+	static void StatFPS();
 
 protected:
+	
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Abilities")
+	TObjectPtr<UBaseAbilitySystemComponent> BaseAbilitySystemComponent;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Abilities")
+	TObjectPtr<UBaseAttributeSet> BaseAttributeSet;
+
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
+	virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override;
 
 public:	
 	// Called every frame
