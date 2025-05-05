@@ -9,7 +9,6 @@
 #include "BaseAbilitySystemComponent.h"
 #include "BaseAttributeSet.h"
 
-// Sets default values
 ABaseCharacter::ABaseCharacter()
 {
  	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
@@ -29,7 +28,6 @@ ABaseCharacter::ABaseCharacter()
 	Velocity = 0.f;
 }
 
-// Called when the game starts or when spawned
 void ABaseCharacter::BeginPlay()
 {
 	Super::BeginPlay();
@@ -98,7 +96,6 @@ void ABaseCharacter::StatFPS()
 	PRINT(9, "BaseCharacter Tick used %f%% of 16.67ms budget", Purple, BudgetPercentage);
 }
 
-// Called every frame
 void ABaseCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);\
@@ -107,7 +104,6 @@ void ABaseCharacter::Tick(float DeltaTime)
 	PRINT(8, "Max Health: %f", Green, BaseAttributeSet->GetMaxHealth());
 }
 
-// Called to bind functionality to input
 void ABaseCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);

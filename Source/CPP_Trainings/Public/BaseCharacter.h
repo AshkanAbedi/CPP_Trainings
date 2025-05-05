@@ -28,7 +28,7 @@ class CPP_TRAININGS_API ABaseCharacter : public ACharacter, public IAbilitySyste
 	GENERATED_BODY()
 
 public:
-	// Sets default values for this character's properties
+	
 	ABaseCharacter();
 	
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Input")
