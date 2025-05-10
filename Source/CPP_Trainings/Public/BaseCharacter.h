@@ -8,11 +8,11 @@
 #include "BaseCharacter.generated.h"
 
 class ABasePlayerController;
+class UBaseAbilitySystemComponent;
+class UBaseAttributeSet;
 class UInputMappingContext;
 class UInputAction;
 struct FInputActionInstance;
-class UBaseAbilitySystemComponent;
-class UBaseAttributeSet;
 
 UENUM(BlueprintType)
 enum class EPlayerStates : uint8
@@ -58,12 +58,14 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "State")
 	bool bIsWalking;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "State")
+	bool bIsOnStair;
+
 	void MoveForward(const FInputActionInstance& Value);
 	void TurnRight(const FInputActionInstance& Value);
 	void TurnLeft(const FInputActionInstance& Value);
 	void StopMoving();
 	ABasePlayerController* GetPlayerController() const;
-	static void StatFPS();
 
 protected:
 	
@@ -72,16 +74,17 @@ protected:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Abilities")
 	TObjectPtr<UBaseAttributeSet> BaseAttributeSet;
-
-	// Called when the game starts or when spawned
+	
+	FHitResult HitResult;
+	FCollisionQueryParams CollisionParams;
+	FTimerHandle TraceTimerHandle;
+	bool bHitSomething;
+	
 	virtual void BeginPlay() override;
-	virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override;
-
-public:	
-	// Called every frame
 	virtual void Tick(float DeltaTime) override;
-
-	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
-
+	virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override;
+	static void StatFPS();
+	void Tracing();
+	
 };

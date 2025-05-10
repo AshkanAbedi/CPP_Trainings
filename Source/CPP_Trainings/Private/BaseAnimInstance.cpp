@@ -7,18 +7,6 @@
 void UBaseAnimInstance::NativeInitializeAnimation()
 {
 	Super::NativeInitializeAnimation();
-
-	Character = Cast<ABaseCharacter>(TryGetPawnOwner());
-
-	if (Character)
-	{
-		// Initialize any variables or perform setup here
-		PRINT(1, "BaseAnimInstance Initialized", Green);
-	}
-	else
-	{
-		PRINT(2, "BaseAnimInstance Failed to Initialize", Red);
-	}
 }
 
 void UBaseAnimInstance::NativeUpdateAnimation(float DeltaSeconds)

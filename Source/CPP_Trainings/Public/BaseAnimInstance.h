@@ -16,14 +16,8 @@ class CPP_TRAININGS_API UBaseAnimInstance : public UAnimInstance
 public:
 
 	virtual void NativeInitializeAnimation() override;
-
 	virtual void NativeUpdateAnimation(float DeltaSeconds) override;
 
-protected:
-
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = Character)
-	TObjectPtr<ABaseCharacter> Character;
-	
 private:
 	
 };
