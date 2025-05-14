@@ -6,6 +6,8 @@
 #include "GameFramework/Actor.h"
 #include "BaseStairActor.generated.h"
 
+class UBoxComponent;
+class UShapeComponent;
 class UStaticMeshComponent;
 class ABaseCharacter;
 
@@ -16,11 +18,22 @@ class CPP_TRAININGS_API ABaseStairActor : public AActor
 	
 public:	
 	ABaseStairActor();
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Components)
+	TObjectPtr<UBoxComponent> TriggerBox;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Components)
 	TObjectPtr<UStaticMeshComponent> StaticMeshComponent;
 
 protected:
 	virtual void BeginPlay() override;
+
+	UFUNCTION()
+	void OnTriggerBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
+	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
+
+	UFUNCTION()
+	void OnTriggerEndOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
+	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
 
 };

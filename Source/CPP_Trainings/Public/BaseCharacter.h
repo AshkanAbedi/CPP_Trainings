@@ -19,7 +19,7 @@ enum class EPlayerStates : uint8
 {
 	Normal,
 	Walking,
-	Turning
+	OnStairs
 };
 
 UCLASS(config=Game)
@@ -43,13 +43,16 @@ public:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Input")
 	TObjectPtr<UInputAction> InputTurnLeft;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Movement")
-	float MoveRate;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Movement", meta = (ClampMin = "0.0", UIMin = "0.0"))
+	float DefaultWalkSpeed;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Movement", meta = (ClampMin = "0.0", UIMin = "0.0"))
+	float OnStairsSpeed;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Movement")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Movement", meta = (ClampMin = "0.0", UIMin = "0.0"))
 	float TurnRate;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Movement")
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Movement", meta = (ClampMin = "0.0", UIMin = "0.0"))
 	float Velocity;
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "State")
@@ -65,6 +68,7 @@ public:
 	void TurnRight(const FInputActionInstance& Value);
 	void TurnLeft(const FInputActionInstance& Value);
 	void StopMoving();
+	void SetIsOnStairs(bool bNewIsOnStairs);
 	ABasePlayerController* GetPlayerController() const;
 
 protected:
@@ -78,13 +82,17 @@ protected:
 	FHitResult HitResult;
 	FCollisionQueryParams CollisionParams;
 	FTimerHandle TraceTimerHandle;
-	bool bHitSomething;
 	
 	virtual void BeginPlay() override;
 	virtual void Tick(float DeltaTime) override;
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 	virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override;
-	static void StatFPS();
 	void Tracing();
+	void UpdatePlayerState();
+
+	
+#if UE_BUILD_DEBUG
+	static void StatFPS();
+#endif
 	
 };
