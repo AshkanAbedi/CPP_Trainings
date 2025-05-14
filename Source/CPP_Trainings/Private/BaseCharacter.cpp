@@ -10,7 +10,7 @@
 #include "BaseStairActor.h"
 #include "InputAction.h"
 #include "EnhancedInputComponent.h"
-
+#include "GameFramework/CharacterMovementComponent.h"
 
 ABaseCharacter::ABaseCharacter()
 {
@@ -34,6 +34,8 @@ ABaseCharacter::ABaseCharacter()
 	MoveRate = 200.0f;
 	TurnRate = 100.0f;
 	Velocity = 0.f;
+
+	GetCharacterMovement()->MaxWalkSpeed = 200.f;
 
 	bIsWalking = false;
 	bIsOnStair = false;
@@ -127,15 +129,17 @@ void ABaseCharacter::Tracing()
 		if (HitResult.GetActor()->IsA(ABaseStairActor::StaticClass()))
 		{
 			bIsOnStair = true;
+			GetCharacterMovement()->MaxWalkSpeed = 50.f;
 		}
 
 		else
 		{
 			bIsOnStair = false;
+			GetCharacterMovement()->MaxWalkSpeed = 200.f;
 		}
 	}
 
-	DrawDebugLine(GetWorld(), TraceStartPoint, TraceEndPoint, FColor::Red, false, 1.0f, 0, 1.0f);
+	//DrawDebugLine(GetWorld(), TraceStartPoint, TraceEndPoint, FColor::Red, false, 1.0f, 0, 1.0f);
 }
 
 void ABaseCharacter::Tick(float DeltaTime)

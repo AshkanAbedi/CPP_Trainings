@@ -12,7 +12,6 @@ ABaseStairActor::ABaseStairActor()
 	StaticMeshComponent->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Block);
 	StaticMeshComponent->SetGenerateOverlapEvents(true);
 	StaticMeshComponent->CanCharacterStepUpOn = ECB_Yes;
-	
 }
 
 void ABaseStairActor::BeginPlay()
