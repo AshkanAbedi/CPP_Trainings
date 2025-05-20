@@ -30,7 +30,6 @@ ABaseCamera::ABaseCamera()
 	
 }
 
-
 void ABaseCamera::BeginPlay()
 {
 	Super::BeginPlay();
@@ -38,6 +37,7 @@ void ABaseCamera::BeginPlay()
 	if (!bPitchFollow && !bYawFollow && !bMoveOnCurve)
 	{
 		PrimaryActorTick.bCanEverTick = false;
+		SetActorTickEnabled(false);
 	}
 
 	CameraOriginalPosition = GetActorLocation();

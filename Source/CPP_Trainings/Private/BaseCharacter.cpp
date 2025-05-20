@@ -1,7 +1,7 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
-#include "BaseMacros.h"
 #include "BaseCharacter.h"
+#include "BaseMacros.h"
 #include "BasePlayerController.h"
 #include "Components/ArrowComponent.h"
 #include "Components/CapsuleComponent.h"
@@ -117,7 +117,6 @@ void ABaseCharacter::StatFPS()
 	PRINT(9, "BaseCharacter Tick used %f%% of 16.67ms budget", Purple, BudgetPercentage);
 }
 #endif
-
 
 void ABaseCharacter::Tracing()
 {

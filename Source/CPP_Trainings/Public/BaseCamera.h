@@ -23,9 +23,7 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Component)
 	TObjectPtr<USplineComponent> SplineComponent;
-
-	/*UFUNCTION()
-	void OnActivated(UActorComponent* Component, bool bReset);*/
+	
 	virtual void BeginPlay() override;
 	virtual void Tick(float DeltaTime) override;
 	virtual void BecomeViewTarget(APlayerController* PC) override;
@@ -55,15 +53,15 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Behavior)
 	float OnCurveSpeed;
 
+protected:
+
+	UPROPERTY()
+	TObjectPtr<ABaseCharacter> PlayerCharacter;
+	
 	FVector CameraOriginalPosition;
 
 	FRotator CameraOriginalRotation;
 	
 	float CurrentPositionOnSpline;
-	
-	UPROPERTY()
-	ABaseCharacter* PlayerCharacter;
-
-protected:
 	
 };
