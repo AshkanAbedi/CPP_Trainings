@@ -69,7 +69,7 @@ public:
 	void TurnLeft(const FInputActionInstance& Value);
 	void StopMoving();
 	void SetIsOnStairs(bool bNewIsOnStairs);
-	ABasePlayerController* GetPlayerController() const;
+	TObjectPtr<ABasePlayerController> GetPlayerController() const;
 
 protected:
 	

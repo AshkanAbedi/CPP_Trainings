@@ -7,6 +7,7 @@
 
 ABaseGameMode::ABaseGameMode()
 {
+	
 }
 
 void ABaseGameMode::BeginPlay()

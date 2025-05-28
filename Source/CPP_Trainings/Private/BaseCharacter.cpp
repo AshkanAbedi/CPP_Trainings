@@ -96,7 +96,7 @@ void ABaseCharacter::StopMoving()
 	UpdatePlayerState();
 }
 
-ABasePlayerController* ABaseCharacter::GetPlayerController() const
+TObjectPtr<ABasePlayerController> ABaseCharacter::GetPlayerController() const
 {
 	return Cast<ABasePlayerController>(GetController());
 }
