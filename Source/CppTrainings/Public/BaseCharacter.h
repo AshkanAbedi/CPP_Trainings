@@ -23,7 +23,7 @@ enum class EPlayerStates : uint8
 };
 
 UCLASS(config=Game)
-class CPP_TRAININGS_API ABaseCharacter : public ACharacter, public IAbilitySystemInterface
+class CPPTRAININGS_API ABaseCharacter : public ACharacter, public IAbilitySystemInterface
 {
 	GENERATED_BODY()
 

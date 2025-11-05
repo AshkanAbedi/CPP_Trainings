@@ -23,7 +23,7 @@ enum class EPlayerState : uint8
 };
 
 UCLASS()
-class CPP_TRAININGS_API ABasePawn : public APawn
+class CPPTRAININGS_API ABasePawn : public APawn
 {
 	GENERATED_BODY()
 

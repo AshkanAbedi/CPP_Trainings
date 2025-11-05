@@ -10,7 +10,7 @@
  * 
  */
 UCLASS()
-class CPP_TRAININGS_API UBaseAbilitySystemComponent : public UAbilitySystemComponent
+class CPPTRAININGS_API UBaseAbilitySystemComponent : public UAbilitySystemComponent
 {
 	GENERATED_BODY()
 	

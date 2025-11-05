@@ -7,7 +7,7 @@
 #include "BaseGameMode.generated.h"
 
 UCLASS()
-class CPP_TRAININGS_API ABaseGameMode : public AGameModeBase
+class CPPTRAININGS_API ABaseGameMode : public AGameModeBase
 {
 	GENERATED_BODY()
 	

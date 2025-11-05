@@ -19,7 +19,7 @@ DECLARE_DYNAMIC_MULTICAST_DELEGATE_ThreeParams(FAttributeChangedEvent, UAttribut
  * 
  */
 UCLASS()
-class CPP_TRAININGS_API UBaseAttributeSet : public UAttributeSet
+class CPPTRAININGS_API UBaseAttributeSet : public UAttributeSet
 {
 	GENERATED_BODY()
 

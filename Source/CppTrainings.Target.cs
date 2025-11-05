@@ -3,13 +3,13 @@
 using UnrealBuildTool;
 using System.Collections.Generic;
 
-public class CPP_TrainingsTarget : TargetRules
+public class CppTrainingsTarget : TargetRules
 {
-	public CPP_TrainingsTarget(TargetInfo Target) : base(Target)
+	public CppTrainingsTarget(TargetInfo Target) : base(Target)
 	{
 		Type = TargetType.Game;
 		DefaultBuildSettings = BuildSettingsVersion.V5;
 
-		ExtraModuleNames.AddRange( new string[] { "CPP_Trainings" } );
+		ExtraModuleNames.AddRange( new string[] { "CppTrainings" } );
 	}
 }

@@ -9,7 +9,7 @@
 class ABaseCharacter;
 
 UCLASS()
-class CPP_TRAININGS_API UBaseAnimInstance : public UAnimInstance
+class CPPTRAININGS_API UBaseAnimInstance : public UAnimInstance
 {
 	GENERATED_BODY()
 

@@ -3,13 +3,13 @@
 using UnrealBuildTool;
 using System.Collections.Generic;
 
-public class CPP_TrainingsEditorTarget : TargetRules
+public class CppTrainingsEditorTarget : TargetRules
 {
-	public CPP_TrainingsEditorTarget(TargetInfo Target) : base(Target)
+	public CppTrainingsEditorTarget(TargetInfo Target) : base(Target)
 	{
 		Type = TargetType.Editor;
 		DefaultBuildSettings = BuildSettingsVersion.V5;
 
-		ExtraModuleNames.AddRange( new string[] { "CPP_Trainings" } );
+		ExtraModuleNames.AddRange( new string[] { "CppTrainings" } );
 	}
 }
