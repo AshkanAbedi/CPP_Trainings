@@ -13,7 +13,7 @@ class ABasePlayerController;
 class ABaseCharacter;
 
 UCLASS()
-class CPP_TRAININGS_API ABaseTriggerBox : public AActor
+class CPPTRAININGS_API ABaseTriggerBox : public AActor
 {
 	GENERATED_BODY()
 	

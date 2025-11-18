@@ -11,7 +11,7 @@ class USplineComponent;
 class ABaseCharacter;
 
 UCLASS()
-class CPP_TRAININGS_API ABaseCamera : public ACameraActor
+class CPPTRAININGS_API ABaseCamera : public ACameraActor
 {
 	GENERATED_BODY()
 

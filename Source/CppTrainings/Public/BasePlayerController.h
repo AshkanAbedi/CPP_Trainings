@@ -11,7 +11,7 @@ class ABaseGameMode;
 class ABaseCharacter;
 
 UCLASS()
-class CPP_TRAININGS_API ABasePlayerController : public APlayerController
+class CPPTRAININGS_API ABasePlayerController : public APlayerController
 {
 	GENERATED_BODY()
 

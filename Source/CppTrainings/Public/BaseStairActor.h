@@ -12,7 +12,7 @@ class UStaticMeshComponent;
 class ABaseCharacter;
 
 UCLASS()
-class CPP_TRAININGS_API ABaseStairActor : public AActor
+class CPPTRAININGS_API ABaseStairActor : public AActor
 {
 	GENERATED_BODY()
 	
