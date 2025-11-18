@@ -5,8 +5,6 @@
 #include "BasePlayerController.h"
 #include "Components/ArrowComponent.h"
 #include "Components/CapsuleComponent.h"
-#include "BaseAbilitySystemComponent.h"
-#include "BaseAttributeSet.h"
 #include "BaseStairActor.h"
 #include "InputAction.h"
 #include "EnhancedInputComponent.h"
@@ -24,9 +22,6 @@ ABaseCharacter::ABaseCharacter()
 	GetCapsuleComponent()->SetGenerateOverlapEvents(true);
 	GetCapsuleComponent()->SetCollisionProfileName(UCollisionProfile::Pawn_ProfileName);
 	GetCapsuleComponent()->SetCollisionResponseToChannel(ECC_Visibility, ECR_Ignore);
-	
-	BaseAbilitySystemComponent = CreateDefaultSubobject<UBaseAbilitySystemComponent>(TEXT("BaseAbilitySystemComponent"));
-	BaseAttributeSet = CreateDefaultSubobject<UBaseAttributeSet>(TEXT("BaseAttributeSet"));
 
 	AutoPossessPlayer = EAutoReceiveInput::Player0;
 	AutoReceiveInput = EAutoReceiveInput::Player0;
@@ -49,18 +44,10 @@ void ABaseCharacter::BeginPlay()
 
 	check(InputMappingContext && InputMoveForward && InputTurnRight && InputTurnLeft);
 
-	if (BaseAbilitySystemComponent)
-		BaseAbilitySystemComponent->InitAbilityActorInfo(this, this);
-
 	PlayerStates = EPlayerStates::Normal;
 	GetCharacterMovement()->MaxWalkSpeed = DefaultWalkSpeed;
 	
 	//GetWorld()->GetTimerManager().SetTimer(TraceTimerHandle, this, &ABaseCharacter::Tracing, 0.1f, true);
-}
-
-UAbilitySystemComponent* ABaseCharacter::GetAbilitySystemComponent() const
-{
-	return BaseAbilitySystemComponent;
 }
 
 void ABaseCharacter::MoveForward(const FInputActionInstance& Value)

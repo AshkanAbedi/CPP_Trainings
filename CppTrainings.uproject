@@ -11,9 +11,13 @@
 			"AdditionalDependencies": [
 				"Engine",
 				"AnimGraph",
-				"CinematicCamera",
-				"GameplayAbilities"
+				"CinematicCamera"
 			]
+		},
+		{
+			"Name": "PlayerCharacter",
+			"Type": "Runtime",
+			"LoadingPhase": "Default"
 		}
 	],
 	"Plugins": [
@@ -46,14 +50,6 @@
 		},
 		{
 			"Name": "CineCameraRigs",
-			"Enabled": true
-		},
-		{
-			"Name": "GameplayAbilities",
-			"Enabled": true
-		},
-		{
-			"Name": "AbilitySystemGameFeatureActions",
 			"Enabled": true
 		},
 		{

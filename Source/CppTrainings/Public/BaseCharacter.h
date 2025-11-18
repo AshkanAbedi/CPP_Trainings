@@ -1,15 +1,11 @@
 // Fill out your copyright notice in the Description page of Project Settings.
-
 #pragma once
 
 #include "CoreMinimal.h"
-#include "AbilitySystemInterface.h"
 #include "GameFramework/Character.h"
 #include "BaseCharacter.generated.h"
 
 class ABasePlayerController;
-class UBaseAbilitySystemComponent;
-class UBaseAttributeSet;
 class UInputMappingContext;
 class UInputAction;
 struct FInputActionInstance;
@@ -23,12 +19,11 @@ enum class EPlayerStates : uint8
 };
 
 UCLASS(config=Game)
-class CPPTRAININGS_API ABaseCharacter : public ACharacter, public IAbilitySystemInterface
+class CPPTRAININGS_API ABaseCharacter : public ACharacter
 {
 	GENERATED_BODY()
 
 public:
-	
 	ABaseCharacter();
 	
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Input")
@@ -72,13 +67,6 @@ public:
 	TObjectPtr<ABasePlayerController> GetPlayerController() const;
 
 protected:
-	
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Abilities")
-	TObjectPtr<UBaseAbilitySystemComponent> BaseAbilitySystemComponent;
-
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Abilities")
-	TObjectPtr<UBaseAttributeSet> BaseAttributeSet;
-	
 	FHitResult HitResult;
 	FCollisionQueryParams CollisionParams;
 	FTimerHandle TraceTimerHandle;
@@ -86,7 +74,6 @@ protected:
 	virtual void BeginPlay() override;
 	virtual void Tick(float DeltaTime) override;
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
-	virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override;
 	void Tracing();
 	void UpdatePlayerState();
 
