@@ -16,6 +16,6 @@ public class CppTrainingsTarget : TargetRules
 
 	private void RegisterModulesCreatedByRider()
 	{
-		ExtraModuleNames.AddRange(new string[] { "PlayerCharacter" });
+		ExtraModuleNames.AddRange(new string[] { "PlayerCharacter", "CameraSystem" });
 	}
 }

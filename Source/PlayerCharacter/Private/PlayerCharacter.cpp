@@ -4,6 +4,8 @@
 #include "Components/ArrowComponent.h"
 #include "Components/CapsuleComponent.h"
 
+DEFINE_LOG_CATEGORY(LogPlayerCharacter);
+
 APlayerCharacter::APlayerCharacter()
 {
 	PrimaryActorTick.bCanEverTick = true;
@@ -49,9 +51,12 @@ void APlayerCharacter::MoveForward(const FInputActionValue& Value)
 
 void APlayerCharacter::Turn(const FInputActionValue& Value)
 {
-	if (Controller && GetWorld())
+	const FVector2D TurnVector = Value.Get<FVector2D>();
+	
+	if (GetController() != nullptr)
 	{
-		AddControllerYawInput(GetActorRightVector().GetAbsMax() * TurnRate * GetWorld()->GetDeltaSeconds());
+		AddControllerYawInput(TurnVector.X * TurnRate * GetWorld()->GetDeltaSeconds());
+		AddControllerYawInput(TurnVector.Y * TurnRate * GetWorld()->GetDeltaSeconds());
 	}
 }
 

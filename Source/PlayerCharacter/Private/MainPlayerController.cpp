@@ -3,6 +3,8 @@
 #include "EnhancedInputSubsystems.h"
 #include "InputMappingContext.h"
 
+DEFINE_LOG_CATEGORY(LogBasePlayerController);
+
 void AMainPlayerController::BeginPlay()
 {
 	Super::BeginPlay();
