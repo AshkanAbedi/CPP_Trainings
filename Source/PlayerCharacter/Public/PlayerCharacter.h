@@ -3,13 +3,13 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
+#include "InputActionValue.h"
 #include "PlayerCharacter.generated.h"
 
 DECLARE_LOG_CATEGORY_EXTERN(LogPlayerCharacter, Log, All);
 
 class USpringArmComponent;
 class UInputAction;
-struct FInputActionValue;
 
 UCLASS(Blueprintable, BlueprintType)
 class PLAYERCHARACTER_API APlayerCharacter : public ACharacter
@@ -26,7 +26,10 @@ public:
 	TObjectPtr<UInputAction> InputTurn;
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Movement")
-	float TurnRate;
+	float MoveRate = 100.0f;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Movement")
+	float TurnRate = 100.0f;
 
 protected:
 	virtual void BeginPlay() override;
