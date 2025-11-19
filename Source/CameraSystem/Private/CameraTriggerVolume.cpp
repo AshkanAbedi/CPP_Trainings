@@ -4,12 +4,26 @@
 #include "CameraTriggerVolume.h"
 #include "CameraDirectorSubsystem.h"
 #include "CameraBaseSystem.h"
+#include "Components/BoxComponent.h"
 #include "GameFramework/Pawn.h"
 #include "GameFramework/PlayerController.h"
 
 ACameraTriggerVolume::ACameraTriggerVolume()
 {
 	PrimaryActorTick.bCanEverTick = true;
+	TriggerVolume = CreateDefaultSubobject<UBoxComponent>(TEXT("Box Component"));
+	TriggerVolume->SetCollisionProfileName(TEXT("Trigger"));
+	TriggerVolume->SetGenerateOverlapEvents(true);
+	TriggerVolume->ShapeColor = FColor::Green;
+	RootComponent = TriggerVolume;
+	
+	StaticMeshComponent = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Trigger Volume"));
+	StaticMeshComponent->SetupAttachment(TriggerVolume);
+	StaticMeshComponent->SetCollisionProfileName(TEXT("NoCollision"));
+	StaticMeshComponent->SetGenerateOverlapEvents(false);
+	StaticMeshComponent->SetVisibility(true);
+	StaticMeshComponent->SetHiddenInGame(true);
+	
 }
 
 void ACameraTriggerVolume::NotifyActorBeginOverlap(AActor* OtherActor)

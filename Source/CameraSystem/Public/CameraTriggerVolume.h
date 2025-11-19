@@ -2,13 +2,15 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Engine/TriggerVolume.h"
+#include "GameFramework/Actor.h"
 #include "CameraTriggerVolume.generated.h"
 
 class ACameraBaseSystem;
+class UBoxComponent;
+class UStaticMeshComponent;
 
-UCLASS()
-class CAMERASYSTEM_API ACameraTriggerVolume : public ATriggerVolume
+UCLASS(Blueprintable, BlueprintType)
+class CAMERASYSTEM_API ACameraTriggerVolume : public AActor
 {
 	GENERATED_BODY()
 
@@ -16,6 +18,13 @@ public:
 	ACameraTriggerVolume();
 
 protected:
+	
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
+	TObjectPtr<UBoxComponent> TriggerVolume;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Components")
+	TObjectPtr<UStaticMeshComponent> StaticMeshComponent;
+	
 	UPROPERTY(EditInstanceOnly, BlueprintReadOnly, Category = "Camera System")
 	TSoftObjectPtr<ACameraBaseSystem> CameraToActivate;
 	
